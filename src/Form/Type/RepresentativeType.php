@@ -27,7 +27,8 @@ class RepresentativeType extends AbstractType
 				'required' => true
 			])
 			->add('emails', EmailType::class, [
-				'required' => true
+				'required' => true,
+				'label' => 'Email'
 			])
 			->add( 'Celebrities', EntityType::class, array(
 					// query choices from this entity
@@ -38,7 +39,7 @@ class RepresentativeType extends AbstractType
 				    },
 					// set the field in the entity to use
 					'choice_label' => 'name',
-					'label' => 'name',
+					'label' => 'Celebrity',
 					'multiple' => true,
 					'placeholder'  => ' - Select a Celebrity - ',
 					'empty_data'   => null,

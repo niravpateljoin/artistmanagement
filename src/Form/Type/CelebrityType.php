@@ -38,7 +38,7 @@ class CelebrityType extends AbstractType
 				    },
 					// set the field in the entity to use
 					'choice_label' => 'name',
-					'label' => 'name',
+					'label' => 'Representative',
 					'multiple' => true,
 					'placeholder'  => ' - Select a Representative - ',
 					'empty_data'   => null,
