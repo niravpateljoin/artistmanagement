@@ -24,7 +24,9 @@ class CelebrityType extends AbstractType
 		$builder
 			->add('name', TextType::class)
 			->add('birthday', DateType::class, [
-				'required' => true
+				'required' => true,
+				'widget' => 'choice',
+                 'years' => range(date('Y'), date('Y')-100)
 			])
 			->add('bio', TextType::class, [
 				'required' => true

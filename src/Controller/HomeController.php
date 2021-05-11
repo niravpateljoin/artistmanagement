@@ -17,20 +17,10 @@ use \DateTime;
 class HomeController extends AbstractController
 {
 	/**
-	 * @Route("/dashboard", name="home")
+	 * @Route("/", name="home")
 	 */
     public function indexAction(Request $request)
     {
-        $securityContext = $this->container->get('security.authorization_checker');
-        if (! $securityContext->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
-            return $this->redirect($this->generateUrl('fos_user_security_login'));
-        }
-    	$objCelebrity = $this->getDoctrine()->getRepository('App:Celebrity')->findAll();
-    	$objRepresentative = $this->getDoctrine()->getRepository('App:Representative')->findAll();
-    	$data = array(
-    		'objCelebrity'      => $objCelebrity,
-    		'objRepresentative' => $objRepresentative
-    	);
-		return $this->render('Dashboard/index.html.twig', $data);
+		return $this->redirect($this->generateUrl('fos_user_security_login'));
     }
 }

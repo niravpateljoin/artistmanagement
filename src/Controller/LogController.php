@@ -16,20 +16,20 @@ use \DateTime;
 
 class LogController extends AbstractController
 {
-	/**
-	 * @Route("/log", name="log_list")
-	 */
+    /**
+     * @Route("/log", name="log_list")
+     */
     public function listAction(Request $request)
     {
-    	$securityContext = $this->container->get('security.authorization_checker');
+        $securityContext = $this->container->get('security.authorization_checker');
         if (! $securityContext->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
             return $this->redirect($this->generateUrl('fos_user_security_login'));
         }
-    	$objLog = $this->getDoctrine()->getRepository('App:Log')->findAll();
-    	
-    	$data = array(
-    		'objLog'      => $objLog
-    	);
-		return $this->render('Log/list.html.twig', $data);
+        $objLog = $this->getDoctrine()->getRepository('App:Log')->findBy(array(),array('id'=>'DESC'));
+        
+        $data = array(
+            'objLog'      => $objLog
+        );
+        return $this->render('Log/list.html.twig', $data);
     }
 }

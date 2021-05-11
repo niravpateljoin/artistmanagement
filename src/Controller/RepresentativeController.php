@@ -25,7 +25,7 @@ class RepresentativeController extends AbstractController
         if (! $securityContext->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
             return $this->redirect($this->generateUrl('fos_user_security_login'));
         }
-    	$objRepresentative = $this->getDoctrine()->getRepository('App:Representative')->findAll();
+    	$objRepresentative = $this->getDoctrine()->getRepository('App:Representative')->findBy(array(),array('id'=>'DESC'));
     	
     	$data = array(
     		'objRepresentative'      => $objRepresentative
@@ -71,6 +71,7 @@ class RepresentativeController extends AbstractController
 	 */
     public function updateAction(Request $request, $id)
     {
+    	$user = $this->getUser();
     	$date = new DateTime();
     	$securityContext = $this->container->get('security.authorization_checker');
         if (! $securityContext->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
@@ -94,9 +95,16 @@ class RepresentativeController extends AbstractController
         		$changeNote = '';
 
         		foreach ($changeset as $key => $value) {
+        			$oldData = $value[0];
         			$changeData = $value[1];
-        			$changeNote = $changeNote . "Representative ". $key ." updated to - ".  $changeData . ", ";
+        			$changeNote = "Representative ". $key ." updated from - ". $oldData ." to - ".  $changeData . " By " . $user->getUserName();
+
+        			$log = new Log();
+					$log->setChangeNotes($changeNote);		
+					$log->setCreatedAt($date);
+					$em->persist($log);
         		}
+        		$em->flush();
 
 				$em->persist($representative);
 				$em->flush();
@@ -105,19 +113,14 @@ class RepresentativeController extends AbstractController
 
 				if( $exitsCelebsOfRepresentatives !== $updatedCelebsOfRepresentatives )
         		{
-        			$changeNote = $changeNote . "Representative's celebrity list updated to - ".  $updatedCelebsOfRepresentatives;
-        		}
-
-        		// generate the log for edit record...
-				if( $changeNote !== '' )
-				{
-					$changeNote = $changeNote . " At ". $date->format('Y-m-d H:i:s');		
-					$log = new Log();
+        			$changeNote = "Representative's celebrity list updated from - " . $exitsCelebsOfRepresentatives . " to - ".  $updatedCelebsOfRepresentatives . " By " . $user->getUserName();
+        			$log = new Log();
 					$log->setChangeNotes($changeNote);		
 					$log->setCreatedAt($date);
 					$em->persist($log);
 					$em->flush();
-				}
+        		}
+
 
 				$this->addFlash('success', 'Representative has been successfully updated.');
 			} catch (\Exception $e) {

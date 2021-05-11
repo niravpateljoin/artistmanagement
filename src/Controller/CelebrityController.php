@@ -25,7 +25,7 @@ class CelebrityController extends AbstractController
         if (! $securityContext->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
             return $this->redirect($this->generateUrl('fos_user_security_login'));
         }
-    	$objCelebrity = $this->getDoctrine()->getRepository('App:Celebrity')->findAll();
+    	$objCelebrity = $this->getDoctrine()->getRepository('App:Celebrity')->findBy(array(),array('id'=>'DESC'));
     	
     	$data = array(
     		'objCelebrity'      => $objCelebrity
@@ -70,6 +70,8 @@ class CelebrityController extends AbstractController
 	 */
     public function updateAction(Request $request, $id)
     {
+    	$user = $this->getUser();
+
     	$securityContext = $this->container->get('security.authorization_checker');
         if (! $securityContext->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
             return $this->redirect($this->generateUrl('fos_user_security_login'));
@@ -91,13 +93,30 @@ class CelebrityController extends AbstractController
         		$changeset = $uow->getEntityChangeSet($celebrity);
         		$changeNote = '';
         		foreach ($changeset as $key => $value) {
+        			$oldData = $value[0];
         			$changeData = $value[1];
         			if( $key == 'birthday' )
         			{
-        				$changeData = $value[1]->format('Y-m-d H:i:s');
+        				$oldData = '';
+        				if( $value[0] != null )
+        				{
+        					$oldData = $value[0]->format('Y-m-d');
+        				}
+
+        				$changeData = '';
+        				if( $value[1] != null )
+        				{
+        					$changeData = $value[1]->format('Y-m-d');
+        				}
         			}
-        			$changeNote = $changeNote . "Celebrity ". $key ." updated to - ".  $changeData . ", ";
+        			$changeNote = "Celebrity ". $key ." updated from - ". $oldData ." to - ".  $changeData . " By " . $user->getUserName();
+
+        			$log = new Log();
+					$log->setChangeNotes($changeNote);		
+					$log->setCreatedAt($date);
+					$em->persist($log);
         		}
+				$em->flush();
 
 				$em->persist($celebrity);
 				$em->flush();
@@ -105,23 +124,19 @@ class CelebrityController extends AbstractController
         		
         		if( $exitsCelebsOfRepresentatives !== $updatedCelebsOfRepresentatives )
         		{
-        			$changeNote = $changeNote . "Celebrity's representative list updated to - ".  $updatedCelebsOfRepresentatives;
-        		}
+        			$changeNote = "Celebrity's representative list updated from - " . $exitsCelebsOfRepresentatives . " to - ".  $updatedCelebsOfRepresentatives . " By " . $user->getUserName();
 
-				// generate the log for edit record...
-				if( $changeNote !== '' )
-				{
-					$changeNote = $changeNote . " At ". $date->format('Y-m-d H:i:s');		
-					$log = new Log();
+        			$log = new Log();
 					$log->setChangeNotes($changeNote);		
 					$log->setCreatedAt($date);
 					$em->persist($log);
 					$em->flush();
-				}
+        		}
+
 
 				$this->addFlash('success', 'Celebrity has been successfully updated.');
 			} catch (\Exception $e) {
-				$this->addFlash('danger', 'An error occurred when updated celebrity object.');
+				$this->addFlash('danger', 'An error occurred when updating celebrity object.');
 			}
 
 			return $this->redirectToRoute('celebrity_list');
