@@ -1,0 +1,42 @@
+{% extends 'Layout/base.html.twig' %}
+{% if action == 'add' %}
+    {% set title = 'Create Celebrity'|trans %}
+{% else %}
+    {% set title = 'Update Celebrity'|trans %}
+{% endif %}
+
+{% block stylesheet %}
+    <style type="text/css">
+        
+        form {
+            border: 2px solid;
+            border-radius: 29px;
+            padding: 36px;
+        }
+    </style>
+{% endblock %}
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="container-fluid">
+           <div class="row">
+            {% if action == 'add' %}
+                <h2 class="text-center"> Add Celebrity </h2>
+            {% else %}
+                <h2 class="text-center"> Edit Celebrity </h2>
+            {% endif %}
+                <div class="col-xs-3 col-md-3">
+                </div>
+                <div class="col-xs-6 col-md-6">
+                    {{ form_start(form) }}
+                    {{ form_widget(form) }}
+                    {{ form_end(form) }}
+                </div>
+                <div class="col-xs-3 col-md-3">
+                </div>
+           </div> 
+            
+        </div>
+    </div>
+{% endblock %}

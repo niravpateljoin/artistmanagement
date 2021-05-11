@@ -1,1 +1,1 @@
-# artistmanagement
+# Artist-Management

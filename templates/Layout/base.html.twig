@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+
+    <title>{% block title %}{% endblock %} | {{ 'Artist Management'|trans }}</title>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" type="text/css">
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Raleway:400,500,600,700" type="text/css">
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Playfair+Display:400" type="text/css">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    {% block stylesheet %}
+    {% endblock %}
+        <style>
+            .nav-logo {
+                top: 0;
+                font-size: 20px;
+                font-weight: bold;
+                position: sticky;
+            }
+
+            body {
+              font-family: "Lato", sans-serif;
+            }
+
+            .sidenav {
+              height: 100%;
+              width: 0;
+              position: fixed;
+              z-index: 1;
+              top: 0;
+              left: 0;
+              background-color: #111;
+              overflow-x: hidden;
+              transition: 0.5s;
+              padding-top: 60px;
+            }
+
+            .sidenav a {
+              padding: 8px 8px 8px 32px;
+              text-decoration: none;
+              font-size: 25px;
+              color: #818181;
+              display: block;
+              transition: 0.3s;
+            }
+
+            .sidenav a:hover {
+              color: #f1f1f1;
+            }
+
+            .sidenav .closebtn {
+              position: absolute;
+              top: 0;
+              right: 25px;
+              font-size: 36px;
+              margin-left: 50px;
+            }
+
+            #main {
+              transition: margin-left .5s;
+              padding: 16px;
+              padding-top: 5px;
+            }
+
+            @media screen and (max-height: 450px) {
+              .sidenav {padding-top: 15px;}
+              .sidenav a {font-size: 18px;}
+            }
+        </style>
+</head>
+
+<body class="{% block body_class %}{% endblock %}">
+    <nav class="navbar navbar-light bg-light" style="background-color: #f8f9fa!important;">
+      <a class="navbar-brand" href="{{ path('celebrity_list') }}">
+        <p class="nav-logo">
+            Artist Management
+        </p>
+      </a>
+      <ul class="navbar-nav ml-auto" style="float: right;">
+        {% if app.user %}
+            <li id="menuLogout">
+                <a href="{{ path('fos_user_security_logout') }}" class="btn btn-logout">Logout</a>
+            </li>
+        {% endif %}
+      </ul>
+    </nav>
+    {% if app.user %}
+        <div id="mySidenav" class="sidenav" style="margin-top: 55px">
+          <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+          <a href="{{ path('celebrity_list') }}">Celebrity</a>
+          <a href="{{ path('representative_list') }}">Representative</a>
+          <a href="{{ path('log_list') }}">Logs</a>
+        </div>
+        <div id="main">
+          <span style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776;</span>
+        </div>
+    {% endif %}
+
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">
+            {{ message }}
+        </div>
+    {% endfor %}
+    {% block content %}{% endblock %}
+
+
+    <script type="text/javascript">
+        setTimeout(function(){ 
+            $('.alert').hide();
+        }, 3000);
+
+        $(document).ready(function(){
+            $('#celebrity_submit, #representative_submit').addClass('btn');
+            $('form #celebrity, form #representative').children('div').addClass('form-group');
+            $('form #celebrity .form-group, form #representative .form-group').find('input, select').addClass('form-control');
+        });
+
+        function openNav() {
+          document.getElementById("mySidenav").style.width = "250px";
+          document.getElementById("main").style.marginLeft = "250px";
+        }
+
+        function closeNav() {
+          document.getElementById("mySidenav").style.width = "0";
+          document.getElementById("main").style.marginLeft= "0";
+        }
+    </script>
+    {% block javascripts %}{% endblock %}
+</body>
+</html>

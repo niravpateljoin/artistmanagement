@@ -1,0 +1,53 @@
+{% extends 'Layout/base.html.twig' %}
+{% set title = 'Log'|trans %}
+
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+	<div class="container" style="background-color: ghostwhite;padding: 20px;">
+        <div class="container-fluid">
+        	<h3 style="text-align: center;font-weight: bold;margin-bottom:25px;">
+		        List Log
+		    </h3>
+		    <div class="row" style="max-height: 525px;overflow: auto;">
+		        <div class="col-md-12">
+		            <table class="table table-bulk dataTable" cellspacing="0">
+		                <thead class="hidden-xs hidden-sm">
+		                    <tr>
+		                    	<th>Sr</th>
+		                        <th>Change Notes</th>
+		                    </tr>
+		                </thead>
+		                <tbody>
+		                    {% if objLog|length > 0 %}
+		                    	{% for log in objLog %}
+		                        <tr {% if loop.index % 2 == 0 %} style="background-color: lightgrey;" {% endif %}>
+		                        	<td>
+		                                <b class="visible-xs visible-sm">Sr</b>
+		                                <div>
+		                                    {{ loop.index }}
+		                                </div>
+		                            </td>
+		                            <td>
+		                                <b class="visible-xs visible-sm">Change Notes</b>
+		                                <div>
+		                                    {{ log.changeNotes }}
+		                                </div>
+		                            </td>
+		                        </tr>
+		                    	{% endfor %}
+		                    {% else %}
+		                    	<tr style="text-align: center;">
+		                    		<td colspan="5">
+		                    			<span>No data available</span>
+		                    		</td>
+		                    	</tr>
+		                    {% endif %}
+		                </tbody>
+		            </table>
+		        </div>
+		    </div>
+		</div>
+	</div>
+{% endblock %}
