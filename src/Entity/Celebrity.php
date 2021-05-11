@@ -30,6 +30,11 @@ class Celebrity
     private $birthday;
 
     /**
+     * @ORM\Column(name="type", type="string")
+     */
+    private $role;
+
+    /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $bio;
@@ -38,6 +43,11 @@ class Celebrity
      * @ORM\ManyToMany(targetEntity="App\Entity\Representative", inversedBy="celebrities")
      */
     private $representatives;
+
+    public function __construct()
+    {
+        $this->representatives = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -94,6 +104,34 @@ class Celebrity
     public function setRepresentatives($representatives)
     {
         $this->representatives = $representatives;
+    }
+
+    public function getRole(): ?string
+    {
+        return $this->role;
+    }
+
+    public function setRole(string $role): self
+    {
+        $this->role = $role;
+
+        return $this;
+    }
+
+    public function addRepresentative(Representative $representative): self
+    {
+        if (!$this->representatives->contains($representative)) {
+            $this->representatives[] = $representative;
+        }
+
+        return $this;
+    }
+
+    public function removeRepresentative(Representative $representative): self
+    {
+        $this->representatives->removeElement($representative);
+
+        return $this;
     }
 
 }

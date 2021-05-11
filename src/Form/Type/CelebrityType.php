@@ -7,6 +7,7 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -45,6 +46,15 @@ class CelebrityType extends AbstractType
 						'class' => 'select2'
 					)
 				) )
+			->add('role', ChoiceType::class, [
+				'expanded' => true,				
+				'choices' => [
+					'agent' => 'agent',
+					'publicist' => 'publicist',
+					'manager' => 'manager'
+				],
+				'attr' => ['class' => 'role']
+			])
 			->add('submit', SubmitType::class, [
 				'attr' => ['class' => 'btn-primary'],
 			]);
